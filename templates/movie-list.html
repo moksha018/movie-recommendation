@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Movie List - Movie Recommendation System{% endblock %}
+{% block content %}
+
+    <!-- #MOVIE LIST -->
+    <section class="movie-list genre-list">
+        <div class="title-wrapper">
+            <h1 class="heading">All {{ genre }} Movies</h1>
+        </div>
+
+        <div class="grid-list">
+            {% for movie in movies %}
+            <div class="movie-card">
+                <figure class="poster-box card-banner">
+                    <img src="{{ movie.poster_path }}" alt="{{ movie.title }}" class="img-cover">
+                </figure>
+                <h4 class="title">{{ movie.title }}</h4>
+                <div class="meta-list">
+                    <div class="meta-item">
+                        <img src="{{ url_for('static', filename='images/star.png') }}" width="20" height="20" loading="lazy" alt="rating">
+                        <span class="span">{{ movie.vote_average }}</span>
+                    </div>
+                    <div class="card-badge">{{ movie.release_date }}</div>
+                </div>
+                <a href="/detail/{{ movie.id }}" class="card-btn" title="{{ movie.title }}"></a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Search Results Section -->
+    {% if search_results %}
+    <div class="search-modal ">
+        <div class="movie-list">
+            <div class="grid-list">
+                <!-- Loop through search results and display -->
+                {% for result in search_results %}
+                <div class="movie-card">
+                    <figure class="poster-box card-banner">
+                        <img src="{{ result.poster_path }}" alt="{{ result.title }}" class="img-cover">
+                    </figure>
+                    <h4 class="title">{{ result.title }}</h4>
+                    <div class="meta-list">
+                        <div class="meta-item">
+                            <img src="static\images\star.png" width="20" height="20" loading="lazy" alt="rating">
+                            <span class="span">{{ result.vote_average }}</span>
+                        </div>
+                        <div class="card-badge">{{ result.release_date }}</div>
+                    </div>
+                    <a href="/detail/{{ result.id }}" class="card-btn" title="{{ result.title }}"></a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}

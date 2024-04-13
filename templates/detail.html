@@ -1,77 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE+edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content=" Moview is a recommendation system.">
-    <link rel="shortcut icon" href="../favicon.svg" type="image/svg+xml">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="{{ url_for('static', filename='js/global.js') }}" defer></script>
-    
-    
-    <title>{% block title %}Movie Recommendation System{% endblock %}</title>
-</head>
-<body>
-    <header class="header">
-        <a href="/" class="logo">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" width="140" height="32" alt="Movie Recommendation System home">
-        </a>
+{% extends "base.html" %}
+{% block title %}{{ movies.title }} - Movie Recommendation System{% endblock %}
+{% block content %}
 
-        <div class="search-box" search-box>
-            <form action="/movie-list/All" method="GET"> <!-- Assume "/movie-list/All" represents the default movie list URL -->
-                <div class="search-wrapper" search-wrapper>
-                    <input type="text" name="q" aria-label="search movies" placeholder="Search any movies..." class="search-field" autocapitalize="off" search-field>
-                    <img src="{{ url_for('static', filename='images/search.png') }}" width="24" height="24" alt="search" class="leading-icon">
+<!-- #MOVIE DETAIL -->
+<div class="movie-detail">
+    <div class="backdrop-image" style="background-image: url('{{ movies.backdrop_path }}')"></div>
+    <figure class="poster-box movie-poster">
+        <img src="{{ movies.poster_path }}" alt="{{ movies.title }}" class="img-cover">
+    </figure>
+
+    <div class="detail-box">
+        <div class="detail-content">
+            <h1 class="heading">{{ movies.title }}</h1>
+            <div class="meta-list">
+                <div class="meta-item">
+                    <img src="../static/images/star.png" width="20" height="20" alt="rating">
+                    <span class="span">{{ movies.vote_average }}</span>
                 </div>
-                <button type="submit" class="search-btn" search-toggler>
-                    <img src="{{ url_for('static', filename='images/close.png') }}" width="24" height="24" alt="close search box">
-                </button>
-            </form>
+                <div class="separator"></div>
+                <div class="meta-item">{{ movies.runtime }}</div>
+                <div class="separator"></div>
+                <div class="meta-item">{{ movies.release_date }}</div>
+                <div class="meta-item card-badge">{{ movies.certification }}</div>
+            </div>
+            <p class="genre">{{ movies.genres }}</p>
+            <p class="overview">{{ movies.overview }}</p>
+            <ul class="detail-list">
+                <div class="list-item">
+                    <p class="list-name">Starring</p>
+                    <p>{{ movies.casts }}</p>
+                </div>
+                <div class="list-item">
+                    <p class="list-name">Directed By</p>
+                    <p>{{ movies.directors }}</p>
+                </div>
+                <div class="list-item">
+                    <p class="list-name">Language</p>
+                    <p>{{ movies.language }}</p>
+                </div>
+            </ul>
         </div>
 
-        <button class="search-btn" search-toggler menu-close>
-            <img src="{{ url_for('static', filename='images/search.png') }}" width="24" height="24"  alt="open search box">
-        </button>
-    </header>
-    <main>
-        <nav class="sidebar" sidebar >
-            <div class="sidebar-inner">
-                <div class="sidebar-list">
-                    
-                        <p class="title">Genre</p>
-                        <a href="/movie-list/Action" menu-close class="sidebar-link">Action</a>
-                        <a href="/movie-list/Horror" menu-close class="sidebar-link">Horror</a>
-                        <a href="/movie-list/Animation" menu-close class="sidebar-link">Animation</a>
-                        <a href="/movie-list/War" menu-close class="sidebar-link">War</a>
-                        <a href="/movie-list/Crime" menu-close class="sidebar-link">Crime</a>
-                        <a href="/movie-list/Comedy" menu-close class="sidebar-link">Comedy</a>
-                        <a href="/movie-list/Adventure" menu-close class="sidebar-link">Adventure</a>
-                        <a href="/movie-list/Mystery" menu-close class="sidebar-link">Mystery</a>
-                        <a href="/movie-list/Drama" menu-close class="sidebar-link">Drama</a>
-                        <a href="/movie-list/Science Fiction" menu-close class="sidebar-link">Sci-Fi</a>
-                        <a href="/movie-list/Fantasy" menu-close class="sidebar-link">Fantasy</a>
-                        <a href="/movie-list/Family" menu-close class="sidebar-link">Family</a>
-                        <a href="/movie-list/Music" menu-close class="sidebar-link">Music</a>
-                        <a href="/movie-list/History" menu-close class="sidebar-link">History</a>
-                        <a href="/movie-list/Romance" menu-close class="sidebar-link">Romance</a>
-                        <a href="/movie-list/Thriller" menu-close class="sidebar-link">Thriller</a>
-                </div>
-                <div class="sidebar-footer">
-                    <p class="copyright">
-                        Copyright 2024 
-                    </p>
-                    <img src="{{ url_for('static', filename='images/tmdb-logo.png') }}" width="130" height="17" alt="the movie database logo">
-                </div>
+        <div class="title-wrapper">
+            <h3 class="title-large">Trailers and Clips</h3>
+        </div>
+
+        <div class="slider-list">
+            <div class="slider-inner">
+                {% for video_url in movies.videos %}
+                <iframe src="{{ video_url }}" frameborder="0" allowfullscreen="1" loading="lazy"></iframe>
+                {% endfor %}
             </div>
-        </nav>
-        
-        <article class="container" page-content>
-            {% block content %}   {% endblock %}
-        </article>
-    </main>
-</body>
-</html>
+        </div>
+    </div>
+</div>
+
+<!-- #MOVIE LIST -->
+<section class="recommended-movies">
+    <div class="title-wrapper">
+        <h3 class="title-large">Recommended Movies</h3>
+    </div>
+
+    <div class="slider-list">
+        <div class="slider-inner">
+            {% for movies in recommended %}
+            <div class="movie-card">
+                <figure class="poster-box card-banner">
+                    <img src="https://image.tmdb.org/t/p/w1280/{{ movies.poster_path }}" alt="{{ movies.title }}" class="img-cover">
+                </figure>
+                <h4 class="title">{{ movies.title }}</h4>
+                <div class="meta-list">
+                    <div class="meta-item">
+                        <img src="../static/images/star.png" width="20" height="20" loading="lazy" alt="rating">
+                        <span class="span">{{ movies.vote_average }}</span>
+                    </div>
+                    <div class="card-badge">{{ movies.release_date }}</div>
+                </div>
+                <a href="/detail/{{ movies.id }}" class="card-btn" title="{{ movies.title }}"></a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}
